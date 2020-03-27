@@ -11,7 +11,9 @@ LOGS_DIR = os.path.join(ROOT_DIR, "logs")
 DATA_DIR = os.path.join(ROOT_DIR, "data")
 
 RAW_DATA_DIR = os.path.join(DATA_DIR, "raw_data")
-ORIG_DATA_DIR = os.path.join(RAW_DATA_DIR, "sa-emotions")
+KAGGLE_RAW_DATA_DIR = os.path.join(
+    RAW_DATA_DIR, "jigsaw-toxic-comment-classification-challenge"
+)
 OTHERS_RAW_DATA = os.path.join(RAW_DATA_DIR, "others")
 
 PROCESSED_DATA_DIR = os.path.join(DATA_DIR, "processed_data")
