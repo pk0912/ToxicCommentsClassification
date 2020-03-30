@@ -4,6 +4,9 @@ Python file containing methods that are useful in performing text processing
 
 import re
 import unicodedata
+import numpy as np
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
 
 from .ml import nlp, STOPWORDS
 from .words import DATE_STOPWORDS, DIR_STOPWORDS, NUM_STOPWORDS, REL_STOPWORDS
@@ -150,3 +153,25 @@ def general_regex(text):
 
 def get_embeddings(data, embed_model):
     return list(data.map(lambda x: embed_model([x])[0].numpy()))
+
+
+def get_word_vec(glove_filepath):
+    word_vec = {}
+    with open(glove_filepath, "r") as f:
+        for line in f:
+            values = line.split()
+            word = values[0]
+            vec = np.asarray(values[1:], dtype="float32")
+            word_vec[word] = vec
+    return word_vec
+
+
+def get_tokenizer_object(sentences, num_words=20000):
+    tokenizer = Tokenizer(num_words=num_words)
+    tokenizer.fit_on_texts(sentences)
+    return tokenizer
+
+
+def get_text_sequences(tokenizer, sentences, seq_len=None):
+    sequences = tokenizer.texts_to_sequences(sentences)
+    return pad_sequences(sequences, maxlen=seq_len)

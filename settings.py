@@ -23,11 +23,11 @@ SIMPLE_PROCESSED_DATA_DIR = os.path.join(PROCESSED_DATA_DIR, "simple")
 TEST_DATA_DIR = os.path.join(DATA_DIR, "testing_data")
 
 TRAIN_DATA_DIR = os.path.join(DATA_DIR, "training_data")
-TRAIN_DATA_DIR_OHE = os.path.join(TRAIN_DATA_DIR, "one_hot_encoded")
+TRAIN_DATA_DIR_WI = os.path.join(TRAIN_DATA_DIR, "word_2_index")
 TRAIN_DATA_DIR_TF_IDF = os.path.join(TRAIN_DATA_DIR, "tf_idf")
 
 VAL_DATA_DIR = os.path.join(DATA_DIR, "validation_data")
-VAL_DATA_DIR_OHE = os.path.join(VAL_DATA_DIR, "one_hot_encoded")
+VAL_DATA_DIR_WI = os.path.join(VAL_DATA_DIR, "word_2_index")
 VAL_DATA_DIR_TF_IDF = os.path.join(VAL_DATA_DIR, "tf_idf")
 
 SPACY_MEDIUM_MODEL = "en_core_web_md"

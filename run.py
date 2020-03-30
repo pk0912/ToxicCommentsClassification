@@ -3,14 +3,40 @@ Entry point for training and predicting
 """
 import os
 import pandas as pd
+from joblib import dump
+
 from utils.helpers import logger
 from preprocessing import preprocess
-from config import SIMPLE_PROCESSING_TYPE, COMPLEX_PROCESSING_TYPE
+from vectorizer import vectorize
+from config import (
+    SIMPLE_PROCESSING_TYPE,
+    COMPLEX_PROCESSING_TYPE,
+    VECTORIZE_DATA_SIMPLE,
+    VECTORIZE_DATA_COMPLEX,
+    MAX_SEQUENCE_LENGTH,
+    MAX_VOCAB_SIZE,
+)
 from settings import (
     KAGGLE_RAW_DATA_DIR,
     SIMPLE_PROCESSED_DATA_DIR,
     COMPLEX_PROCESSED_DATA_DIR,
+    OBJECTS_DIR,
+    TRAIN_DATA_DIR_WI,
 )
+
+
+def vectorize_data(data_path, save_path):
+    data = pd.read_csv(data_path, encoding="utf-8")
+    tokenizer, vectors = vectorize(
+        MAX_VOCAB_SIZE, MAX_SEQUENCE_LENGTH, data["text"].values
+    )
+    if tokenizer is not None and vectors is not None:
+        dump(tokenizer, os.path.join(OBJECTS_DIR, "tokenizer.joblib"))
+        vec_df = pd.DataFrame(vectors)
+        vec_df = pd.concat([vec_df, data.drop(columns=["text"])], axis=1)
+        vec_df.to_csv(save_path, index=False, encoding="utf-8")
+    else:
+        logger.error("Error in vectorizing data!!!")
 
 
 def main():
@@ -41,6 +67,16 @@ def main():
                 )
             else:
                 logger.error("Unable to write complex processed data!!!")
+        if VECTORIZE_DATA_SIMPLE:
+            vectorize_data(
+                os.path.join(SIMPLE_PROCESSED_DATA_DIR, "train_data_simple.csv"),
+                os.path.join(TRAIN_DATA_DIR_WI, "vectors_simple.csv"),
+            )
+        if VECTORIZE_DATA_COMPLEX:
+            vectorize_data(
+                os.path.join(COMPLEX_PROCESSED_DATA_DIR, "train_data_complex.csv"),
+                os.path.join(TRAIN_DATA_DIR_WI, "vectors_complex.csv"),
+            )
     except Exception as e:
         logger.error("Exception in main method : {}".format(str(e)))
         return
