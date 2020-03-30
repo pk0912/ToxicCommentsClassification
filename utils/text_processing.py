@@ -195,7 +195,7 @@ def get_embedding_layer(num_words, embed_dim, embed_matrix, seq_len):
     return Embedding(
         input_dim=num_words,
         output_dim=embed_dim,
-        weights=embed_matrix,
+        weights=[embed_matrix],
         input_length=seq_len,
         trainable=False,
     )
