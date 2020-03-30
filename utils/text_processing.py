@@ -7,6 +7,7 @@ import unicodedata
 import numpy as np
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
+from tensorflow.keras.layers import Embedding
 
 from .ml import nlp, STOPWORDS
 from .words import DATE_STOPWORDS, DIR_STOPWORDS, NUM_STOPWORDS, REL_STOPWORDS
@@ -175,3 +176,26 @@ def get_tokenizer_object(sentences, num_words=20000):
 def get_text_sequences(tokenizer, sentences, seq_len=None):
     sequences = tokenizer.texts_to_sequences(sentences)
     return pad_sequences(sequences, maxlen=seq_len)
+
+
+def get_embedding_matrix(
+    glove_filepath, word_ind_dict, num_words, embed_dim, vocab_size
+):
+    word_vec = get_word_vec(glove_filepath)
+    embedding_matrix = np.zeros((num_words, embed_dim))
+    for word, ind in word_ind_dict.items():
+        if ind < vocab_size:
+            embed_vector = word_vec.get(word)
+            if embed_vector is not None:
+                embedding_matrix[ind] = embed_vector
+    return embedding_matrix
+
+
+def get_embedding_layer(num_words, embed_dim, embed_matrix, seq_len):
+    return Embedding(
+        input_dim=num_words,
+        output_dim=embed_dim,
+        weights=embed_matrix,
+        input_length=seq_len,
+        trainable=False,
+    )
